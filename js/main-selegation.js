@@ -4,6 +4,7 @@ import {
   getGameStatusElement,
   getCellElementAtIdx,
   getReplayElement,
+  getCellListElement,
 } from './selectors.js';
 import { CELL_VALUE, GAME_STATUS, TURN } from './constants.js';
 import { checkGameStatus } from './utils.js';
@@ -99,11 +100,21 @@ function handleCellClick(cell, index) {
 }
 
 function initCellElementList() {
-  const cellElementList = getCellElementList();
-
-  cellElementList.forEach((cell, index) => {
-    cell.addEventListener('click', () => handleCellClick(cell, index));
+  // set index forEach element
+  const liList = getCellElementList();
+  liList.forEach((cell, index) => {
+    cell.dataset.idx = index;
   });
+  // attach event click event
+  const ulEL = getCellListElement();
+  if (ulEL) {
+    ulEL.addEventListener('click', (event) => {
+      if (event.target.tagName !== 'LI') return;
+      const index = Number.parseInt(event.target.dataset.idx);
+
+      handleCellClick(event.target, index);
+    });
+  }
 }
 
 function resetGame() {
